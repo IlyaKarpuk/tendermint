@@ -23,6 +23,7 @@ type Mempool interface {
 	Reap(int) Txs
 	Update(height int, txs Txs)
 	Flush()
+	FlushAppConn() error
 
 	TxsAvailable() <-chan int
 	EnableTxsAvailable()
@@ -40,6 +41,7 @@ func (m MockMempool) Update(height int, txs Txs)                   {}
 func (m MockMempool) Flush()                                       {}
 func (m MockMempool) TxsAvailable() <-chan int                     { return make(chan int) }
 func (m MockMempool) EnableTxsAvailable()                          {}
+func (m MockMempool) FlushAppConn() error                          { return nil }
 
 //------------------------------------------------------
 // blockstore

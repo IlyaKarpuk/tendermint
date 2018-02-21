@@ -252,6 +252,13 @@ func (s *State) CommitStateUpdateMempool(proxyAppConn proxy.AppConnConsensus, bl
 	mempool.Lock()
 	defer mempool.Unlock()
 
+	// while mempool is Locked, flush to ensure all async requests have completed in the ABCI app before Commit
+	err := mempool.FlushAppConn()
+	if err != nil {
+		s.logger.Error("Client error during mempool.FlushAppConn", "err", err)
+		return err
+	}
+
 	// Commit block, get hash back
 	res := proxyAppConn.CommitSync()
 	if res.IsErr() {
